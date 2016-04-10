@@ -1,23 +1,11 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 var app = express();
 var PORT = process.env.PORT || 3000;
-var todos = [
-    {
-        id: 1,
-        description: 'Meet mom for lunch',
-        completed: false
-    },
-    {
-        id: 2,
-        description: 'Go to market',
-        completed: false
-    },
-    {
-        id: 3,
-        description: 'Go to cinema',
-        completed: true
-    },
-]
+var todos = [];
+var todoNextId = 1;
+
+app.use(bodyParser.json());
 
 app.get('/', function(req, res)
 {
@@ -54,6 +42,21 @@ app.get('/todos/:id', function(req, res)
     }
 
     //res.send('Asking for todo with id of '+req.params.id);
+});
+
+//POST /todos
+app.post('/todos', function(req, res)
+{
+    var body = req.body;
+
+    //add id field
+    body.id = todoNextId++;
+    //push body into array
+    todos.push(body);
+
+    ///console.log('description: ' + body.description);
+
+    res.json(body);
 });
 
 app.listen(PORT, function()
